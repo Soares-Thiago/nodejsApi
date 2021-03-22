@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    volumes:
+      - ./src:/home/node/app/src
+      - ./nodemon.json:/home/node/app/nodemon.json
+    container_name: api
+    environment:
+      STRING_CONNECTION: ${STRING_CONNECTION}
+    expose:
+      - '8080'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - database
+    links:
+      - database
+    command: npm run dev
+
+  database:
+    image: mongo
+    container_name: database
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - "27017:27017"
